@@ -145,7 +145,6 @@ MouseProc(nCode, wParam, lParam) {
 			
 			
 			; Calculate a delta between each.
-			; TODO: This may be unnecessary now.
 			deltaX = % hookX - mouseX
 			deltaY = % hookY - mouseY
 			absDeltaX = % Abs(deltaX)
@@ -193,13 +192,27 @@ MouseProc(nCode, wParam, lParam) {
 			if (leftBound || rightBound) {
 				
 				; See if this attempted mouse position (hook) crosses over one of our X or Y boundaries.
+				; TODO: Need to find a way to abstract this repeated code.
 				for index, curBound in yBoundaries {
 					if (isBetween(curBound, hookY, mouseY) > 0) {
 						teleported = 1
-						teleportDeltaY = (crossDeltaCoef * deltaY) + boundaryLength
+						
+						; Offset main axis to ensure our in-between step is on the OTHER side of the boundary.
+						; Note: This only needs to be a small static amount.
+						if (deltaY > 0) {
+							teleportDeltaY = % curBound + boundaryLength
+						} else {
+							teleportDeltaY = % curBound - boundaryLength
+						}
+						
+						; Offset cross axis relative to speed (and always including baseline boundary length).
+						teleportDeltaX = % (crossDeltaCoef * absDeltaY) + (boundaryLength * 4)
+						if (lowBound) {
+							; ... invert since we're at the bottom.
+							teleportDeltaX = % (maxX - teleportDeltaX)
+						}
 					}
-				}
-			}
+				}			}
 			
 			; If we've determined it's time to teleport, set coordinates now.
 			if (teleported == 1) {
@@ -214,12 +227,10 @@ MouseProc(nCode, wParam, lParam) {
 				teleportX = % (teleportX > minX ? teleportX : minX)
 				teleportY = % (teleportY > minY ? teleportY : minY)
 				
-				if (lowBound) {
-					debug("Delta X: " . deltaX . ", Delta Y: " . deltaY, true)
-					debug("Teleport Delta X: " . teleportDeltaX . ", Teleport  Delta Y: " . teleportDeltaY, true)
-					debug("Teleport X: " . teleportX . ", Teleport Y: " . teleportY, true)
-					debug("-----", true)
-				}
+				debug("Delta X: " . deltaX . ", Delta Y: " . deltaY, true)
+				debug("Teleport Delta X: " . teleportDeltaX . ", Teleport  Delta Y: " . teleportDeltaY, true)
+				debug("Teleport X: " . teleportX . ", Teleport Y: " . teleportY, true)
+				debug("-----", true)
 			}
 			
 		}
@@ -252,7 +263,7 @@ DoTeleportation() {
 		debug("Teleported to " . teleportX . ", " . teleportY . "!`n", true)
 		teleportX = 0
 		teleportY = 0
-		teleported = 0 ; TODO: Redundant, remove when done testing and only check this on mouse move.
+		teleported = 0
 	}
 	
 }

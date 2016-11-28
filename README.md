@@ -57,5 +57,5 @@ Known issues:
 * When entering a corner, pointer may come back out at lower/higher location.
 
 ## To Do
-* Still need to complete vertical monitor mouse capturing (copy/abstract code from horizontal teleportation). 
+* Still need to complete vertical monitor mouse capturing (copy/abstract code from horizontal teleportation). Just needs testing. 
 
