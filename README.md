@@ -7,8 +7,6 @@ Helps to circumvent the mouse sticking between multiple monitors in Windows 10.
 
 See my other Windows 8 and Windows 10 bug fix for the [Explorer titlebar context menu](https://github.com/patricknelson/windows-explorer-context-bug).
 
-**Note:** This is a work in progress (see "To Do" below).
-
 ## Installation Instructions
 
 There are two ways to install and set this up to boot with Windows. Once running, you should see the AutoHotkey icon ![AutoHotkey System Tray Icon](images/autohotkey-tray.png) running in your system tray in the bottom right corner of your screen.
@@ -59,3 +57,11 @@ Known issues:
 ## To Do
 * Still need to complete vertical monitor mouse capturing (copy/abstract code from horizontal teleportation). Just needs testing. 
 
+
+## Acknowledgements
+
+Written out of spite by Patrick Nelson (pat@catchyour.com).
+
+* Inspired by Jonathan Barton's [Delphi-based solution](http://www.jawfin.net/?page_id=143), but instead written from scratch in AutoHotkey. 
+* Initial `MouseProc()` function based on Lexikos' code from [this forum post](//autohotkey.com/board/topic/27067-mouse-move-detection/?p=174693).
+* Cursor hiding `SystemCursor()` function based on lifeweaver's code from [this forum post](https://autohotkey.com/board/topic/99043-auto-hiding-the-mouse-cursor-temporarily/?p=622246).
