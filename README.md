@@ -64,4 +64,4 @@ Written out of spite by Patrick Nelson (pat@catchyour.com).
 
 * Inspired by Jonathan Barton's [Delphi-based solution](http://www.jawfin.net/?page_id=143), but instead written from scratch in AutoHotkey. 
 * Initial `MouseProc()` function based on Lexikos' code from [this forum post](//autohotkey.com/board/topic/27067-mouse-move-detection/?p=174693).
-* Cursor hiding `SystemCursor()` function based on lifeweaver's code from [this forum post](https://autohotkey.com/board/topic/99043-auto-hiding-the-mouse-cursor-temporarily/?p=622246).
+* Cursor hiding `SystemCursor()` function based on lifeweaver's code from [this forum post](https://autohotkey.com/board/topic/99043-auto-hiding-the-mouse-cursor-temporarily/?p=622246), originally derived from shimanov's [post here](https://autohotkey.com/board/topic/5727-hiding-the-mouse-cursor/?p=35098).
