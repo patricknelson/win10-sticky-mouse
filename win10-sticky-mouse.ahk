@@ -5,7 +5,7 @@
 ;;; CONFIG ;;;
 
 ; Enable debug mode?
-debugEnabled = 1
+debugEnabled = 0
 
 ; Pixel threshold to "teleport" mouse to other side.
 boundaryLength = 5
@@ -122,7 +122,7 @@ return
 
 ; 'MouseProc()' function was built out of boilerplate from: https://autohotkey.com/board/topic/27067-mouse-move-detection/
 MouseProc(nCode, wParam, lParam) {
-    global MouseHook, xBoundaries, yBoundaries, tooltipMessage, teleported, teleportX
+    global MouseHook, xBoundaries, yBoundaries, tooltipMessage, teleported, teleportX, teleportY
 	global boundaryLength, minY, maxY, minX, maxX
 	global mouseX, mouseY
 	global deltaX, deltaY
@@ -162,7 +162,7 @@ MouseProc(nCode, wParam, lParam) {
 			lowBound = % (hookY + boundaryLength) >= maxY
 			leftBound = % (hookX - boundaryLength) <= minX
 			rightBound = % (hookX + boundaryLength) >= maxX
-			
+		
 			; Check X boundaries (making sure we're in cross axis boundary length).
 			if (upBound || lowBound) {
 				
@@ -214,10 +214,12 @@ MouseProc(nCode, wParam, lParam) {
 				teleportX = % (teleportX > minX ? teleportX : minX)
 				teleportY = % (teleportY > minY ? teleportY : minY)
 				
-				debug("Delta X: " . deltaX . ", Delta Y: " . deltaY, true)
-				debug("Teleport Delta X: " . teleportDeltaX . ", Teleport  Delta Y: " . teleportDeltaY, true)
-				debug("Teleport X: " . teleportX . ", Teleport Y: " . teleportY, true)
-				debug("-----", true)
+				if (lowBound) {
+					debug("Delta X: " . deltaX . ", Delta Y: " . deltaY, true)
+					debug("Teleport Delta X: " . teleportDeltaX . ", Teleport  Delta Y: " . teleportDeltaY, true)
+					debug("Teleport X: " . teleportX . ", Teleport Y: " . teleportY, true)
+					debug("-----", true)
+				}
 			}
 			
 		}
@@ -239,15 +241,15 @@ DoTeleportation() {
 		
 		; Teleport now.
 		;BlockInput, On
-		;SystemCursor("Off")
+		SystemCursor("Off")
 		CoordMode, Mouse, Screen
 		MouseMove teleportDeltaX, teleportDeltaY, speed
 		MouseMove teleportX, teleportY, speed
-		;SystemCursor("On")
+		SystemCursor("On")
 		;BlockInput, Off
 		
 		
-		;debug("Teleported to " . teleportX . ", " . teleportY . "!`n", true)
+		debug("Teleported to " . teleportX . ", " . teleportY . "!`n", true)
 		teleportX = 0
 		teleportY = 0
 		teleported = 0 ; TODO: Redundant, remove when done testing and only check this on mouse move.
