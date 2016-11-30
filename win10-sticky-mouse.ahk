@@ -12,7 +12,6 @@ boundaryLength = 5
 
 ; Delta coefficient. Offset on the cross axis by this much relative to speed.
 crossDeltaCoef = 0.5
-mainDeltaCoef = 0.5
 
 ;;; END CONFIG ;;;
 
@@ -89,8 +88,6 @@ teleportY = 0
 
 ; These are updated by MosueProc() below. Needed by DoTeleportation() to 
 ; determine the direction to jump around in.
-mouseX = 0 
-mouseY = 0
 deltaX = 0 
 deltaY = 0
 
@@ -124,9 +121,8 @@ return
 MouseProc(nCode, wParam, lParam) {
     global MouseHook, xBoundaries, yBoundaries, tooltipMessage, teleported, teleportX, teleportY
 	global boundaryLength, minY, maxY, minX, maxX
-	global mouseX, mouseY
 	global deltaX, deltaY
-	global teleportDeltaX, teleportDeltaY, crossDeltaCoef, mainDeltaCoef
+	global teleportDeltaX, teleportDeltaY, crossDeltaCoef
     Critical
 		
 	; Only worry about mouse movement events.
@@ -270,23 +266,6 @@ DoTeleportation() {
 
 
 
-crossesBoundaries(boundariesArray, mousePos, hookPos, minDim, maxDim) {
-	global boundaryLength
-
-	; Look at the desired HOOK location and see if it's going to be within our gravity/boundary area.
-	if ((hookY - boundaryLength) <= minY || (hookY + boundaryLength) >= maxDim) {
-		
-		; See if this attempted mouse position (hook) crosses over one of our X or Y boundaries.
-		for index, curBound in boundariesArray {
-			if (isBetween(curBound, hookPos, mousePos) > 0) {
-				teleported = 1
-			}
-		}
-	}
-
-}
-
-
 ; This way it doesn't matter what order value1/value2 are (as long as they are different numbers).
 isBetween(checkVal, value1, value2) {
 	min = % value1 < value2 ? value1 : value2
@@ -310,8 +289,6 @@ debug(str, useTooltip) {
 	}
 }
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ; From https://autohotkey.com/board/topic/99043-auto-hiding-the-mouse-cursor-temporarily/
