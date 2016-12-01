@@ -17,8 +17,9 @@ crossDeltaCoef = 0.5
 
 
 
-; Get number of monitors and populate dimensions into arrays.
-SysGet, monitors, MonitorCount
+
+; Check current monitor configuration and boundaries. Should be done regularly since
+; the monitor topology can change from time to time while the script continues running.
 left := Object()
 top := Object()
 right := Object()
@@ -27,53 +28,75 @@ minX = 0
 minY = 0
 maxX = 0
 maxY = 0
-loop, %monitors% {
-	SysGet, screen, Monitor, %a_index%
-	;debug("Monitor: " . a_index . ", Left: " . screenLeft . ", Top: " . screenTop . ", Right: " . screenRight . ", Bottom: " . screenBottom)
-	
-	; Retain screen dimensions to help calculate boundaries BETWEEN monitors.
-	left.Insert(screenLeft)
-	top.Insert(screenTop)
-	right.Insert(screenRight)
-	bottom.Insert(screenBottom)
-	
-	; Also keep track of min/max values so we don't teleport past them.
-	; ... boy do I wish they had simple Min()/Max() functions.
-	minX := screenLeft < minX ? screenLeft : minX
-	maxX := screenRight > maxX ? screenRight : maxX
-	minY := screenTop < minY ? screenTop : minY
-	maxY := screenBottom > maxY ? screenBottom : maxY
-}
-
-
-
-; Calculate boundaries for screens.
-; ... boy do I wish I could use "continue" in for loops.
 xBoundaries := Object()
-for index1, leftBound in left {
-	; Not a boundary if it's already at our minimum...
-	if (leftBound > minX) {
-		; See if this boundary matches up with any others.
-		for index2, rightBound in right {
-			; Ignore same monitor.
-			if ((index1 != index2) && (leftBound == rightBound)) {
-				; Found a matching boundary.
-				xBoundaries.Insert(leftBound)
+yBoundaries := Object()
+
+checkMonitors()
+SetTimer, checkMonitors, 3000 ; Checks every 3 seconds.
+
+checkMonitors() {
+	global left, top, right, bottom
+	global minX, minY, maxX, maxY
+	global xBoundaries, yBoundaries
+	
+	; Reset the globals that we've got to update.
+	left := Object()
+	top := Object()
+	right := Object()
+	bottom := Object()
+	minX = 0
+	minY = 0
+	maxX = 0
+	maxY = 0
+	xBoundaries := Object()
+	yBoundaries := Object()
+	
+	; Get number of monitors and populate dimensions into arrays.
+	SysGet, monitors, MonitorCount
+	loop, %monitors% {
+		SysGet, screen, Monitor, %a_index%
+		;debug("Monitor: " . a_index . ", Left: " . screenLeft . ", Top: " . screenTop . ", Right: " . screenRight . ", Bottom: " . screenBottom)
+		
+		; Retain screen dimensions to help calculate boundaries BETWEEN monitors.
+		left.Insert(screenLeft)
+		top.Insert(screenTop)
+		right.Insert(screenRight)
+		bottom.Insert(screenBottom)
+		
+		; Also keep track of min/max values so we don't teleport past them.
+		; ... boy do I wish they had simple Min()/Max() functions.
+		minX := screenLeft < minX ? screenLeft : minX
+		maxX := screenRight > maxX ? screenRight : maxX
+		minY := screenTop < minY ? screenTop : minY
+		maxY := screenBottom > maxY ? screenBottom : maxY
+	}
+	
+	; Calculate boundaries for screens.
+	; ... boy do I wish I could use "continue" in for loops.
+	for index1, leftBound in left {
+		; Not a boundary if it's already at our minimum...
+		if (leftBound > minX) {
+			; See if this boundary matches up with any others.
+			for index2, rightBound in right {
+				; Ignore same monitor.
+				if ((index1 != index2) && (leftBound == rightBound)) {
+					; Found a matching boundary.
+					xBoundaries.Insert(leftBound)
+				}
 			}
 		}
 	}
-}
 
-yBoundaries := Object()
-for index1, topBound in top {
-	; Not a boundary if it's already at our minimum...
-	if (topBound > minY) {
-		; See if this boundary matches up with any others.
-		for index2, bottomBound in bottom {
-			; Ignore same monitor.
-			if ((index1 != index2) && (topBound == bottomBound)) {
-				; Found a matching boundary.
-				yBoundaries.Insert(topBound)
+	for index1, topBound in top {
+		; Not a boundary if it's already at our minimum...
+		if (topBound > minY) {
+			; See if this boundary matches up with any others.
+			for index2, bottomBound in bottom {
+				; Ignore same monitor.
+				if ((index1 != index2) && (topBound == bottomBound)) {
+					; Found a matching boundary.
+					yBoundaries.Insert(topBound)
+				}
 			}
 		}
 	}
