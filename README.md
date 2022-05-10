@@ -1,3 +1,11 @@
+# Repository Archived
+
+This repository has been archived in favor of a better solution:
+
+**https://github.com/MouseUnSnag/MouseUnSnag/**
+
+---
+
 # Windows 10 Sticky Mouse
 Helps to circumvent the mouse sticking between multiple monitors in Windows 10. 
 
